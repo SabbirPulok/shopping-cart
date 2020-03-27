@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <title>Shopping Cart</title>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" />
+   <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+
+   <section>
+      <div class="container">
+         <div class="cart">
+            <div class="col-md-12 col-lg-10 mx-auto">
+               <div id="cartIphone" class="cart-item">
+                  <div class="row">
+                     <div class="col-md-7 center-item">
+                        <img src="images/product-1.png" alt="">
+                        <h5>iPhone 11 128GB Black</h5>
+                     </div>
+
+                     <div class="col-md-5 center-item">
+                        <div class="input-group number-spinner">
+                           <button id="deciPhone" class="btn btn-default"><i class="fas fa-minus"></i></button>
+                           <input id="iPhoneQty" type="text" class="form-control text-center" value="1" min="0">
+                           <button id="inciPhone" class="btn btn-default"><i class="fas fa-plus"></i></button>
+                        </div>
+                        <h5>$<span id="iPhonePrice">1219</span></h5>
+                        <img id="cancelIphone" src="images/remove.png" alt="" class="remove-item">
+                     </div>
+                  </div>
+               </div>
+
+               <div id="cartiPhoneCase" class="cart-item">
+                  <div class="row">
+                     <div class="col-md-7 center-item mx-auto">
+                        <img src="images/product-2.png" alt="">
+                        <h5>iPhone 11 Silicone Case - Black</h5>
+                     </div>
+                     <div class="col-md-5 center-item">
+                        <div class="input-group number-spinner">
+                           <button id="deciPhoneCase" class="btn btn-default"><i class="fas fa-minus"></i></button>
+                           <input id="iPhoneCaseQty" type="text" class="form-control text-center" value="1" min="0">
+                           <button id="inciPhoneCase" class="btn btn-default"><i class="fas fa-plus"></i></button>
+
+                        </div>
+                        <h5>$<span id="iPhoneCasePrice">59</span></h5>
+                        <img id="canceliPhoneCase" src="images/remove.png" alt="" class="remove-item">
+                     </div>
+                  </div>
+               </div>
+
+               <div class="cart-item">
+                  <div class="row">
+
+                     <div class="col-md-8">
+                        <h5>Subtotal: </h5>
+                        <h5>Tax:</h5>
+                        <h5>Total:</h5>
+                     </div>
+
+                     <div class="col-md-4 status">
+                        <h5>$<span id="subTotal">1278</span></h5>
+                        <h5>$<span id="tax">408.96</span></h5>
+                        <h5>$<span id="total">1686.96</span></h5>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-md-12 pt-4 pb-4">
+                  <button id="checkout" type="button" class="btn btn-success check-out">Check Out</button>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <script>
+      //CancelHandler
+      cancelBtn("cancelIphone","cartIphone","iPhoneQty",1219);
+      cancelBtn("canceliPhoneCase","cartiPhoneCase","iPhoneCaseQty",59);
+
+      function cancelBtn(id, hideDiv,productQty, unitPrice)
+      {
+         const cancelProduct = document.getElementById(id);
+         cancelProduct.addEventListener("click",function(){
+         
+         const qty = parseFloat(document.getElementById(productQty).value);
+         document.getElementById(productQty).value = 0;
+         
+         var price = qty*unitPrice;
+         
+         const subtotal = parseFloat(document.getElementById("subTotal").innerText);
+         var subtotal1 = subtotal-price;
+         document.getElementById("subTotal").innerText = subtotal1;
+         taxTotal(subtotal1);
+
+         const hideProduct = document.getElementById(hideDiv);
+         hideProduct.style.display = "none";
+         
+
+         })
+
+      }
+
+      var iPhoneTotal=0;
+      var iPhoneCaseTotal=0;
+
+      //increment Handler
+       incProduct("inciPhone","iPhoneQty","iPhonePrice",1219);
+       incProduct("inciPhoneCase","iPhoneCaseQty","iPhoneCasePrice",59);
+
+      function incProduct(productId,productQty,productPrice, unitPrice)
+      {
+         const incProductId = document.getElementById(productId);
+         var newPrice = 0; 
+         incProductId.addEventListener("click",function()
+            {
+               const qty = parseFloat(document.getElementById(productQty).value);
+               const newQty = qty+1;
+               document.getElementById(productQty).value = newQty;
+                                             
+               if(newQty<=0)
+               {
+                  newPrice = 0;
+                  document.getElementById(productPrice).innerText = newPrice; 
+                  const subtotal = parseFloat(document.getElementById("subTotal").innerText);
+                  var subtotal1=subtotal;
+                  document.getElementById("subTotal").innerText = subtotal1;
+                  
+               }
+               else
+               {
+                  newPrice = unitPrice*newQty;
+                  document.getElementById(productPrice).innerText = newPrice; 
+                  const subtotal = parseFloat(document.getElementById("subTotal").innerText);
+                  var subtotal1=subtotal+unitPrice;
+                  document.getElementById("subTotal").innerText = subtotal1;            
+               }  
+               
+               taxTotal(subtotal1);
+             
+            })
+      }
+
+      //decrement Handler
+      decProduct("deciPhone","iPhoneQty","iPhonePrice",1219);
+      decProduct("deciPhoneCase","iPhoneCaseQty","iPhoneCasePrice",59);
+      
+      function decProduct(productId,productQty,productPrice,unitPrice)
+      {
+         const decProductId = document.getElementById(productId);
+         var newPrice = 0;
+         decProductId.addEventListener("click",function()
+            {
+               const qty = document.getElementById(productQty).value;
+               const newQty = parseFloat(qty)-1;
+               document.getElementById(productQty).value = newQty;
+               
+               if(newQty<0)
+               {
+                  newPrice = 0;
+                  document.getElementById(productPrice).innerText = newPrice;       
+               }
+               else if(newQty==0)
+               {
+                  newPrice=0;
+                  document.getElementById(productPrice).innerText = newPrice;       
+                  const subtotal = parseFloat(document.getElementById("subTotal").innerText);
+                  var subtotal1 = subtotal-unitPrice;
+                  document.getElementById("subTotal").innerText = subtotal1;
+                  taxTotal(subtotal1);
+               }
+               else
+               {
+                  newPrice = unitPrice*newQty;
+                  document.getElementById(productPrice).innerText = newPrice;       
+                  const subtotal = parseFloat(document.getElementById("subTotal").innerText);
+                  var subtotal1=subtotal-unitPrice;
+                  document.getElementById("subTotal").innerText = subtotal1;
+                  taxTotal(subtotal1);
+               }
+
+               
+                                 
+            })
+      }
+      // tax and total calculation
+      function taxTotal(subT)
+      {
+         var tax = (subT*0.32).toFixed(2);
+         document.getElementById("tax").innerText = tax;
+                        
+         var total =  subT+(subT*0.32);
+         document.getElementById("total").innerText = total.toFixed(2);
+      }
+
+      //check-out handler
+      const checkoutBtn = document.getElementById("checkout");
+      checkoutBtn.addEventListener("click",function(){
+         const qtyIphone = parseFloat(document.getElementById("iPhoneQty").value);
+         const qtyiPhoneCase = parseFloat(document.getElementById("iPhoneCaseQty").value);
+         
+         var subT = (qtyIphone*1219)+(qtyiPhoneCase*59);
+         document.getElementById("subTotal").innerText = subT;
+
+         taxTotal(subT);
+      })
+      
+   </script>
+</body>
+
+</html>
